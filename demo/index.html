@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/css/selectize.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/css/selectize.default.min.css" />
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+  <body>
+
+    <div class="container">
+      <h1>Simulación</h1>
+      <!-- Page Content goes here -->
+      <div class="row center">
+        <div class="col s6">
+          <div class="row">
+            <h2>PRE-CLA</h2>
+            <a class="sensor btn-floating btn-large waves-effect waves-light red">BP</a>
+            <a class="sensor btn-floating btn-large waves-effect waves-light red">BO</a>
+            <a class="sensor btn-floating btn-large waves-effect waves-light red">E1</a>
+            <a class="sensor btn-floating btn-large waves-effect waves-light red">A1</a>
+            <a class="sensor btn-floating btn-large waves-effect waves-light red">A2</a>
+          </div>
+          <div class="row">
+            <input readonly id="input-draggable" type="text" />
+          </div>
+        </div>
+        <div class="col s6">
+          <div class="row">
+            <h2>POS-CLA</h2>
+            <a class="sensor btn-floating btn-large waves-effect waves-light red">BP</a>
+            <a class="sensor btn-floating btn-large waves-effect waves-light red">BO</a>
+            <a class="sensor btn-floating btn-large waves-effect waves-light red">E1</a>
+            <a class="sensor btn-floating btn-large waves-effect waves-light red">A1</a>
+            <select id="input-draggable2"></select>
+          </div>
+        </div>
+      </div>
+
+      <!--ACTION BUTTONS-->
+      <div class="row center">
+        <div class="col s4">
+          <a class="waves-effect waves-light btn-large">
+            <i class="material-icons left">settings_backup_restore</i>
+            Reiniciar
+          </a>
+        </div>
+        <div class="col s4">
+          <a class="waves-effect waves-light btn-large indigo">
+            <i class="material-icons left">play_circle_filled</i>
+            Iniciar simulación
+          </a>
+        </div>
+        <div class="col s4">
+          <a class="waves-effect waves-light btn-large">
+            <i class="material-icons left">settings_backup_restore</i>
+            Reiniciar
+          </a>
+        </div>
+      </div>
+
+    </div>
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+
+    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+        crossorigin="anonymous"></script>
+
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/js/standalone/selectize.min.js"></script>
+
+      <script src="app.js"></script>
+    </body>
+  </html>
