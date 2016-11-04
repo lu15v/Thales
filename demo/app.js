@@ -4,20 +4,27 @@ var switches = [
   "E1",
   "A1"
 ];
+var counter = 0;
 
 $(function() {
   console.log('IT WORKS');
   var control = $('#input-draggable').selectize({
-      plugins: ['drag_drop'],
-      delimiter: ',',
+      plugins: ['drag_drop', 'remove_button'],
+      delimiter: ' ',
       persist: false,
       create: function(input) {
+        console.log('creating', input);
         return {
-          value: input,
+          value: counter++,
           text: input
         }
       },
-      options: switches.map(function (el) { return { value: el, text: el }})
+      onFocus: function() {
+        console.log('focused');
+        $(this).blur();
+      },
+      openOnFocus: false,
+      closeAfterSelect: true,
   });
 
 
@@ -25,6 +32,7 @@ $(function() {
     var selectize = control[0].selectize;
     var value = $(this).text();
 
-    selectize.addItem(value);
+
+    selectize.createItem(value);
   });
 });
