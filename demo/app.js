@@ -1,38 +1,37 @@
-var switches = [
-  "BP",
-  "BO",
-  "E1",
-  "A1"
-];
-var counter = 0;
-
 $(function() {
   console.log('IT WORKS');
-  var control = $('#input-draggable').selectize({
-      plugins: ['drag_drop', 'remove_button'],
-      delimiter: ' ',
-      persist: false,
-      create: function(input) {
-        console.log('creating', input);
-        return {
-          value: counter++,
-          text: input
-        }
-      },
-      onFocus: function() {
-        console.log('focused');
-        $(this).blur();
-      },
-      openOnFocus: false,
-      closeAfterSelect: true,
+
+  var selects = ["pre-cla-input", "pos-cla-input"];
+  selects.forEach(function(input) {
+    var control = $('#' + input).selectize({
+        plugins: ['drag_drop', 'remove_button'],
+        delimiter: ' ',
+        persist: false,
+        create: function(input) {
+          return {
+            value: input + '_' + (new Date()).getTime(),
+            text: input
+          }
+        },
+        onFocus: function() {
+          $(this).blur();
+        },
+        openOnFocus: false,
+        closeAfterSelect: true,
+    });
   });
 
 
   $('a.sensor').click(function(event) {
-    var selectize = control[0].selectize;
-    var value = $(this).text();
+    var anchor = $(this);
+    var id = anchor.parent().data('activate');
+    var selectize = $('#' + id)[0].selectize;
+    selectize.createItem(anchor.text());
+  });
 
-
-    selectize.createItem(value);
+  $('a.reset-btn').click(function(event) {
+    var id = $(this).data('reset');
+    var select = $('#' + id)[0].selectize;
+    select.clear();
   });
 });

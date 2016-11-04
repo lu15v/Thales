@@ -15,69 +15,143 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
   <body>
-
+    <header class="indigo white-text">
+      <nav>
+        <div class="nav-wrapper red lighten-1">
+          <div class="container">
+            <a href="#" class="brand-logo">Logo</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+              <li><a href="sass.html">Simulación automática</a></li>
+              <li><a href="badges.html">Simulación manual</a></li>
+              <li><a href="collapsible.html">Documentación</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="row">
+        <div class="container">
+          <h1>Simulación</h1>
+        </div>
+      </div>
+    </header>
     <div class="container">
-      <h1>Simulación</h1>
       <!-- Page Content goes here -->
       <div class="row center">
         <div class="col s6">
-          <div class="row">
-            <h2>PRE-CLA</h2>
-            <a class="sensor btn-floating btn-large waves-effect waves-light red">BP</a>
-            <a class="sensor btn-floating btn-large waves-effect waves-light red">BO</a>
-            <a class="sensor btn-floating btn-large waves-effect waves-light red">E1</a>
-            <a class="sensor btn-floating btn-large waves-effect waves-light red">A1</a>
-            <a class="sensor btn-floating btn-large waves-effect waves-light red">A2</a>
-          </div>
-          <div class="row">
-            <input id="input-draggable" type="text" />
+          <div class="card blue-grey darken-1 white-text">
+            <nav>
+              <div class="nav-wrapper red">
+                <div class="col s12">
+                  <a href="#" class="breadcrumb">PRE CLASIFICACIÓN</a>
+                </div>
+              </div>
+            </nav>
+
+            <div class="card-content">
+              <div class="row" data-activate="pre-cla-input">
+                <a class="sensor btn-floating btn-large waves-effect waves-light red">BP</a>
+                <a class="sensor btn-floating btn-large waves-effect waves-light red">BO</a>
+                <a class="sensor btn-floating btn-large waves-effect waves-light red">E1</a>
+                <a class="sensor btn-floating btn-large waves-effect waves-light red">A1</a>
+              </div>
+              <div class="row">
+                <input id="pre-cla-input" type="text" />
+              </div>
+            </div>
+
+            <div class="card-action">
+              <a class="waves-effect waves-light btn orange reset-btn"
+                  data-reset='pre-cla-input'>
+                <i class="material-icons left">settings_backup_restore</i>
+                Limpiar
+              </a>
+            </div>
           </div>
         </div>
+
+
+        <!--POS CLA-->
         <div class="col s6">
-          <div class="row">
-            <h2>POS-CLA</h2>
-            <a class="sensor btn-floating btn-large waves-effect waves-light red">BP</a>
-            <a class="sensor btn-floating btn-large waves-effect waves-light red">BO</a>
-            <a class="sensor btn-floating btn-large waves-effect waves-light red">E1</a>
-            <a class="sensor btn-floating btn-large waves-effect waves-light red">A1</a>
+          <div class="card blue-grey darken-1 white-text">
+            <nav>
+              <div class="nav-wrapper light-green">
+                <div class="col s12">
+                  <a href="#" class="breadcrumb">POS CLASIFICACIÓN</a>
+                </div>
+              </div>
+            </nav>
+
+            <div class="card-content">
+              <div class="row" data-activate="pos-cla-input">
+                <a class="sensor btn-floating btn-large waves-effect waves-light light-green">BP</a>
+                <a class="sensor btn-floating btn-large waves-effect waves-light light-green">BO</a>
+                <a class="sensor btn-floating btn-large waves-effect waves-light light-green">E1</a>
+                <a class="sensor btn-floating btn-large waves-effect waves-light light-green">A1</a>
+                <a class="sensor btn-floating btn-large waves-effect waves-light light-green">A2</a>
+              </div>
+              <div class="row">
+                <input id="pos-cla-input" type="text" />
+              </div>
+            </div>
+
+            <div class="card-action">
+              <a class="waves-effect waves-light btn orange reset-btn"
+                  data-reset='pos-cla-input'>
+                <i class="material-icons left">settings_backup_restore</i>
+                Limpiar
+              </a>
+            </div>
           </div>
         </div>
+
       </div>
 
       <!--ACTION BUTTONS-->
       <div class="row center">
-        <div class="col s4">
-          <a class="waves-effect waves-light btn-large">
-            <i class="material-icons left">settings_backup_restore</i>
-            Reiniciar
-          </a>
-        </div>
-        <div class="col s4">
-          <a class="waves-effect waves-light btn-large indigo">
-            <i class="material-icons left">play_circle_filled</i>
-            Iniciar simulación
-          </a>
-        </div>
-        <div class="col s4">
-          <a class="waves-effect waves-light btn-large">
-            <i class="material-icons left">settings_backup_restore</i>
-            Reiniciar
-          </a>
-        </div>
+        <a class="waves-effect waves-light btn-large indigo">
+          <i class="material-icons left">play_circle_filled</i>
+          Iniciar simulación
+        </a>
       </div>
-
     </div>
-    <!--Import jQuery before materialize.js-->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+  </div>
+</main>
 
-    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
-        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
-        crossorigin="anonymous"></script>
+<footer class="page-footer red lighten-1">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12 grey-text text-lighten-4">
+        <h5 class="white-text">Proyecto Transporte</h5>
+        <p class="grey-text text-lighten-4">
+          TECNOLÓGICO DE MONTERREY
+          <ul>
+            <li>Fernando Gómez H.</li>
+            <li>Rodolfo A. Ramírez V.</li>
+            <li>Luis E. Ballinas A.</li>
+            <li>Steeven E. Muñoz</li>
+          </ul>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container">
+      © 2016
+    </div>
+  </div>
+</footer>
 
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/js/standalone/selectize.min.js"></script>
+<!--Import jQuery before materialize.js-->
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
 
-      <script src="app.js"></script>
-    </body>
-  </html>
+<script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+    crossorigin="anonymous"></script>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/js/standalone/selectize.min.js"></script>
+
+  <script src="app.js"></script>
+</body>
+</html>

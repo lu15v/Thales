@@ -1,3 +1,7 @@
 .selectize-input {
   cursor: default;
 }
+
+.card h2 {
+  font-weight: lighter;
+}
