@@ -2,12 +2,20 @@ var express = require('express');
 var router  = express.Router();
 
 var SENSOR_MAP = {
-  'BP': 0,
-  'BO': 0,
-  'E1': 0,
-  'E2': 0,
-  'A1': 0,
-  'A2': 0
+  pre: {
+  'BP': false,
+  'BO': false,
+  'E1': false,
+  'E2': false,
+  'A1': false,
+  'A2': false
+  },
+  pos: {
+  'BP': false,
+  'BO': false,
+  'E1': false,
+  'A1': false,
+  'A2': false
 };
 
 var Sensor = function(type, time) {
@@ -22,6 +30,13 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/manual', function(req, res, next) {
+  res.render('manual', {});
+});
+
+router.get('/status', function(req, res, next) {
+  console.log(SENSOR_MAP);
+});
 
 router.post('/signal', function(req, res, next) {
   console.log(req.body);
