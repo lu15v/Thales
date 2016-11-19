@@ -42,8 +42,8 @@ router.get('/status', function(req, res, next) {
 router.post('/toggle', function(req, res, next) {
   var sw     = req.body.sensor;
   var clasif = req.body.clasif.toLowerCase();
-
   var status = SENSOR_MAP[clasif][sw];
+
   SENSOR_MAP[clasif][sw] = !status;
 
   res.status(200).json(SENSOR_MAP);

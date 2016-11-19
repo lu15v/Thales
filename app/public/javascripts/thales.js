@@ -22,4 +22,8 @@ app.controller('SwitchController', function SwitchController($scope) {
     pre: SWITCHES_PRE,
     pos: SWITCHES_POS
   }
+
+  $scope.toggle = function(clasif, sw) {
+    console.log('toggling... ' + clasif + ': ' + sw);
+  };
 });

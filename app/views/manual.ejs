@@ -16,7 +16,9 @@
         <span class="switch">
           <span class="switch-border1">
             <span class="switch-border2">
-              <input id="pre-{{ sw }}" type="checkbox" ng-model="switches.pre[sw]" />
+              <input id="pre-{{ sw }}" type="checkbox"
+                ng-model="switches.pre[sw]"
+                ng-change="toggle('pre', sw)" />
               <label for="pre-{{ sw }}"></label>
               <span class="switch-top"></span>
               <span class="switch-shadow"></span>
@@ -55,7 +57,9 @@
         <span class="switch">
           <span class="switch-border1">
             <span class="switch-border2">
-              <input id="pos-{{ sw }}" type="checkbox" ng-model="switches.pos[sw]" />
+              <input id="pos-{{ sw }}" type="checkbox"
+                ng-model="switches.pos[sw]"
+                ng-change="toggle('pos', sw)" />
               <label for="pos-{{ sw }}"></label>
               <span class="switch-top"></span>
               <span class="switch-shadow"></span>
