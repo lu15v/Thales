@@ -16,7 +16,8 @@ var SENSOR_MAP = {
   'E1': false,
   'A1': false,
   'A2': false
-};
+  }
+}
 
 var Sensor = function(type, time) {
   return {
@@ -35,11 +36,17 @@ router.get('/manual', function(req, res, next) {
 });
 
 router.get('/status', function(req, res, next) {
-  console.log(SENSOR_MAP);
+  res.status(200).json(SENSOR_MAP);
 });
 
-router.post('/signal', function(req, res, next) {
-  console.log(req.body);
+router.post('/toggle', function(req, res, next) {
+  var sw     = req.body.sensor;
+  var clasif = req.body.clasif.toLowerCase();
+
+  var status = SENSOR_MAP[clasif][sw];
+  SENSOR_MAP[clasif][sw] = !status;
+
+  res.status(200).json(SENSOR_MAP);
 });
 
 module.exports = router;
