@@ -36,16 +36,24 @@ router.get('/manual', function(req, res, next) {
 });
 
 router.get('/status', function(req, res, next) {
+  console.log(SENSOR_MAP);
   res.status(200).json(SENSOR_MAP);
 });
 
+/**
+ * HTTP POST
+ * BODY:
+ *  sensor [string]
+ *  clasif [string]: pre | pos
+ **/
 router.post('/toggle', function(req, res, next) {
-  var sw     = req.body.sensor;
+  var sw     = req.body.sensor.toUpperCase();
   var clasif = req.body.clasif.toLowerCase();
   var status = SENSOR_MAP[clasif][sw];
 
   SENSOR_MAP[clasif][sw] = !status;
 
+  console.log(SENSOR_MAP);
   res.status(200).json(SENSOR_MAP);
 });
 
