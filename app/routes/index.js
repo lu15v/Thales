@@ -1,30 +1,16 @@
 var express = require('express');
+var Promise = require('promise');
+var five    = require('johnny-five');
+var raspi   = require('raspi-io');
+
 var router  = express.Router();
 
-var Promise = require('promise');
-
-var five  = require('johnny-five');
-var raspi = require('raspi-io');
-var board = new five.Board({
-    io: new raspi(),
-    repl: false,
-    debug: false
-});
-
-var board-ready = new Promise(function(resolve, reject) {
-  board.on('ready', function() {
-    IS_READY = true;
-    resolve(five, board);
-  });
-});
-
-board-ready.then(function(five, board) {
-  console.log('Board ready');
-  var led = new five.Led(2);
-  led.on();
-});
-
-var IS_READY = false;
+/**
+ * GLOBAL VARS
+ **/
+var GAP_TIME   = 50;
+var STD_TIME   = 100;
+var IS_READY   = false;
 var SENSOR_MAP = {
   pre: {
     'BP': { active: false, pin: 0 },
@@ -43,6 +29,25 @@ var SENSOR_MAP = {
   },
 }
 
+/**
+ * BOARD EVENTS
+ **/
+var board = new five.Board({
+  io: new raspi(),
+  repl: false,
+  debug: false
+});
+var board-ready = new Promise(function(resolve, reject) {
+  board.on('ready', function() {
+    IS_READY = true;
+    resolve(five, board);
+  });
+});
+board-ready.then(function(five, board) {
+  console.log('Board ready');
+  var led = new five.Led(2);
+  led.on();
+});
 var check-board = function(req, res, next) {
   if (!IS_READY) {
     console.error("BOARD NOT READY");
@@ -52,15 +57,17 @@ var check-board = function(req, res, next) {
   }
 }
 
+/**
+ * ROUTES
+ **/
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
-
 router.get('/manual', function(req, res, next) {
   res.render('manual', {});
 });
-
 router.get('/status', check-board, function(req, res, next) {
   console.log(SENSOR_MAP);
   res.status(200).json(SENSOR_MAP);
