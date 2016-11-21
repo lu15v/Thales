@@ -13,6 +13,7 @@ var board = new five.Board({
 
 var board-ready = new Promise(function(resolve, reject) {
   board.on('ready', function() {
+    IS_READY = true;
     resolve(five, board);
   });
 });
@@ -23,6 +24,7 @@ board-ready.then(function(five, board) {
   led.on();
 });
 
+var IS_READY = false;
 var SENSOR_MAP = {
   pre: {
     'BP': { active: false, pin: 0 },
@@ -41,6 +43,15 @@ var SENSOR_MAP = {
   },
 }
 
+var check-board = function(req, res, next) {
+  if (!IS_READY) {
+    console.error("BOARD NOT READY");
+    next('BOARD NOT READY', req, res, next);
+  } else {
+    next();
+  }
+}
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
@@ -50,7 +61,7 @@ router.get('/manual', function(req, res, next) {
   res.render('manual', {});
 });
 
-router.get('/status', function(req, res, next) {
+router.get('/status', check-board, function(req, res, next) {
   console.log(SENSOR_MAP);
   res.status(200).json(SENSOR_MAP);
 });
@@ -61,7 +72,7 @@ router.get('/status', function(req, res, next) {
  *  sensor [string]
  *  clasif [string]: pre | pos
  **/
-router.post('/toggle', function(req, res, next) {
+router.post('/toggle', check-board, function(req, res, next) {
   var sw     = req.body.sensor.toUpperCase();
   var clasif = req.body.clasif.toLowerCase();
   var status = SENSOR_MAP[clasif][sw];
