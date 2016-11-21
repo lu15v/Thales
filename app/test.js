@@ -6,12 +6,13 @@ var board = new five.Board({
 
 board.on("ready", function() {
   // Create a standard `led` component instance
-  var led = new five.Led(2);
 
   // "blink" the led in 500ms
   // on-off phase periods
+  rels = five.Relays([0,2,3,4,5,6,21,22,23,25,27]);
+
   this.repl.inject({
-      led: led,
-      five: five
+      five: five,
+      rels: rels
   });
 });
