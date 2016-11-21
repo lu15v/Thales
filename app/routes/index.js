@@ -89,5 +89,13 @@ router.post('/toggle', check-board, function(req, res, next) {
   console.log(SENSOR_MAP);
   res.status(200).json(SENSOR_MAP);
 });
+router.post('/manual_test', check-board, function(req, res, next) {
+  var body = req.body;
+
+  if (body.first['sensor'] != 'BO') {
+    return res.status(400).json('BO should be the first signal activated');
+  }
+
+});
 
 module.exports = router;
