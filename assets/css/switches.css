@@ -302,7 +302,7 @@ body {
 }
 
 .switch-led-green .switch-led-light {
-	background: rgb(0,161,75);
+	background: rgba(0,161,75, 0.44);
 	border: 0.1em solid rgb(0,104,56);
 }
 
@@ -316,7 +316,7 @@ body {
 }
 
 .switch-led-red .switch-led-light {
-	background: rgb(237,28,36);
+	background: rgba(237,28,36, 0.3);
 	border: 0.1em solid rgb(161,30,45);
 }
 

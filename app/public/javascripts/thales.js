@@ -33,6 +33,8 @@ app.controller('SwitchController', function SwitchController($scope, $http, $int
       });
   }
 
+  $scope.updateStatus();
+
   POLLING = $interval($scope.updateStatus, POLLING_INTERVAL);
 
   $scope.toggle = function(clasif, sw) {
