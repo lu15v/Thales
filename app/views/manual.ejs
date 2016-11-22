@@ -1,20 +1,23 @@
-
 <!DOCTYPE html>
-<html>
+<html ng-app="ManualTest">
   <head>
     <!--Import Google Icon Font-->
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css" />
 
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/css/selectize.min.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/css/selectize.default.min.css" />
+    <link rel="stylesheet" type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/css/selectize.min.css" />
+    <link rel="stylesheet" type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/css/selectize.default.min.css" />
+
+    <!-- Angular Material style sheet -->
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
 
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
-  <body>
+  <body ng-controller="SimulationController">
     <header class="indigo white-text">
       <nav>
         <div class="nav-wrapper red lighten-1">
@@ -64,12 +67,13 @@
               </div>
             </nav>
 
-            <div class="card-content">
-              <div class="row" data-activate="pre-cla-input">
-                <a class="sensor btn-floating btn-large waves-effect waves-light red">BP</a>
-                <a class="sensor btn-floating btn-large waves-effect waves-light red">BO</a>
-                <a class="sensor btn-floating btn-large waves-effect waves-light red">E1</a>
-                <a class="sensor btn-floating btn-large waves-effect waves-light red">A1</a>
+            <div class='card-content'>
+              <div class="row">
+                <a ng-repeat="sensor in sensors.pre"
+                  ng-click="addSensor('PRE', sensor)"
+                   class="sensor btn-floating btn-large waves-effect waves-light red">
+                  {{ sensor }}
+                </a>
               </div>
               <div class="row">
                 <input id="pre-cla-input" type="text" />
@@ -158,6 +162,8 @@
   </div>
 </footer>
 
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+
 <!--Import jQuery before materialize.js-->
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <!-- Compiled and minified JavaScript -->
@@ -169,6 +175,7 @@
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/js/standalone/selectize.min.js"></script>
 
+  <script src="/javascripts/test.js"></script>
   <script src="/javascripts/manual.js"></script>
 </body>
 </html>

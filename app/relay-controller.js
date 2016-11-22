@@ -6,8 +6,8 @@ var raspi   = require('raspi-io');
 /**
  * GLOBAL VARS
  **/
-var GAP_TIME   = 50;
-var STD_TIME   = 100;
+var GAP_TIME   = 1000;
+var STD_TIME   = 2000;
 var IS_READY   = false;
 var SENSOR_MAP = {
   pre: {
@@ -162,10 +162,30 @@ function toggleAll() {
     }
   }
 }
+function close(clasif, sensor) {
+  var clasif = clasif.toLowerCase();
+  var status = SENSOR_MAP[clasif][sensor];
+  var relay  = RELAYS[clasif][sensor];
+
+  console.log('Closing ' + clasif + ': ' + sensor + '...');
+  relay.close();
+  SENSOR_MAP[clasif][sensor] = false;
+}
+function open(clasif, sensor) {
+  var clasif = clasif.toLowerCase();
+  var status = SENSOR_MAP[clasif][sensor];
+  var relay  = RELAYS[clasif][sensor];
+
+  console.log('Opening ' + clasif + ': ' + sensor + '...');
+  relay.open();
+  SENSOR_MAP[clasif][sensor] = true;
+}
 
 module.exports = {
   toggleSensor: toggleSensor,
   toggleAll: toggleAll,
+  close: close,
+  open: open,
   SENSOR_MAP: SENSOR_MAP,
   board: board,
   five: five,
@@ -173,4 +193,6 @@ module.exports = {
   singleAxle: singleAxle,
   doubleAxle: doubleAxle,
   simulate1A: simulate1A,
+  GAP_TIME: GAP_TIME,
+  STD_TIME: STD_TIME
 }

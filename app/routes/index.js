@@ -32,6 +32,9 @@ router.get('/switches', function(req, res, next) {
 router.get('/manual', function(req, res, next) {
   res.render('manual', {});
 });
+router.get('/test', function(req, res, next) {
+  res.render('test', {});
+});
 router.get('/status', checkBoard, function(req, res, next) {
   console.log(SENSOR_MAP);
   res.status(200).json(SENSOR_MAP);
