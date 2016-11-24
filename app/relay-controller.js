@@ -6,8 +6,9 @@ var raspi   = require('raspi-io');
 /**
  * GLOBAL VARS
  **/
-var GAP_TIME   = 1000;
-var STD_TIME   = 2000;
+var FACTOR     = 3;
+var GAP_TIME   = 50 * FACTOR;
+var STD_TIME   = 100 * FACTOR;
 var IS_READY   = false;
 var SENSOR_MAP = {
   pre: {
@@ -91,59 +92,160 @@ var boardReady = new Promise(function(resolve, reject) {
 });
 
 
-function singleAxle() {
-  var promise = new Promise(function(resolve, reject) {
-    var wait = board.wait;
-    open('E1');
-    wait(STD_TIME, function() {
-      close('E1');
-      wait(GAP_TIME, function() {
-        open('A1');
-        wait(STD_TIME, function() {
-          close('A1');
-          wait(GAP_TIME, function() {
-            open('A2');
-            wait(STD_TIME, function() {
-              close('A2');
-              resolve();
-            });
-          });
-        });
-      });
-    });
-  });
-  return promise;
-}
-function doubleAxle() {
-  var promise = new Promise(function(resolve, reject) {
-    var wait = board.wait;
-    open('E1');
-    wait(STD_TIME, function() {
-      close('E1');
-      wait(GAP_TIME, function() {
-        open('A1');
-        open('A2');
-        wait(STD_TIME, function() {
-          close('A1');
-          close('A2');
-          resolve();
-        });
-      });
-    });
-  });
-  return promise;
-}
-function simulate1A() {
+function singleAxle(clasif) {
+  if (clasif === undefined) throw ArgumentException(arguments);
+
   var wait = board.wait;
 
-  open('BO');
+  console.log('> SINGLE AXLE');
+
+  return new Promise(function(resolve, reject) {
+    var s = function(sensor) {
+      return signal(clasif, sensor);
+    }
+
+    if (clasif == 'POS') {
+      s('E1')
+        .then(function () { return s('A1') })
+        .then(function () { return s('A2') })
+        .then(function() {
+          console.log('< SINGLE AXLE');
+          resolve();
+        });
+    } else if (clasif == 'PRE') {
+      s('E1')
+        .then(function () { return s('E2') })
+        .then(function () { return s('A1') })
+        .then(function () { return s('A2') })
+        .then(function() {
+          console.log('< SINGLE AXLE');
+          resolve();
+        });
+    } else {
+      throw ArgumentException(arguments);
+    }
+  });
+}
+function doubleAxle(clasif) {
+  if (clasif === undefined) throw ArgumentException(arguments);
+
+  var wait = board.wait;
+
+  console.log('> DOUBLE AXLE');
+
+  return new Promise(function(resolve, reject) {
+    var s = function(sensor) {
+      return signal(clasif, sensor);
+    }
+    var ss = function(sensor1, sensor2) {
+      return overlapSignal(clasif, sensor1, sensor2);
+    }
+
+    if (clasif == 'POS') {
+      s('E1')
+        .then(function () { return ss('A1', 'A2') })
+        .then(function() {
+          console.log('< DOUBLE AXLE');
+          resolve();
+        });
+    } else if (clasif == 'PRE') {
+      ss('E1', 'E2')
+        .then(function () { return ss('A1', 'A2') })
+        .then(function() {
+          console.log('< DOUBLE AXLE');
+          resolve();
+        });
+    } else {
+      throw ArgumentException(arguments);
+    }
+  });
+}
+
+function signal(clasif, sensor) {
+  return new Promise(function(resolve, reject) {
+    open(clasif, sensor);
+    board.wait(STD_TIME, function() {
+      close(clasif, sensor);
+
+      board.wait(GAP_TIME, function() {
+        resolve();
+      });
+    });
+  });
+}
+function overlapSignal(clasif, sensor1, sensor2) {
+  return new Promise(function(resolve, reject) {
+    open(clasif, sensor1);
+    open(clasif, sensor2);
+    board.wait(STD_TIME, function() {
+      close(clasif, sensor1);
+      close(clasif, sensor2);
+
+      board.wait(GAP_TIME, function() {
+        resolve();
+      });
+    });
+  });
+}
+
+function simulate1A(clasif) {
+  var wait = board.wait;
+
+  var single = function() {
+    return singleAxle(clasif);
+  }
+
+  open(clasif, 'BO');
   wait(GAP_TIME, function() {
-    open('BP');
-    singleAxle()
-      .then(singleAxle)
+    open(clasif, 'BP');
+    single()
+      .then(single)
       .then(function() {
-        close('BP');
-        close('BO');
+        close(clasif, 'BP');
+        close(clasif, 'BO');
+      });
+  });
+}
+function simulate2B(clasif) {
+  var wait = board.wait;
+
+  var single = function() {
+    return singleAxle(clasif);
+  }
+  var double = function() {
+    return doubleAxle(clasif);
+  }
+
+  open(clasif, 'BO');
+  wait(GAP_TIME, function() {
+    open(clasif, 'BP');
+    single()
+      .then(double)
+      .then(function() {
+        close(clasif, 'BP');
+        close(clasif, 'BO');
+      });
+  });
+}
+function simulate3C(clasif) {
+  var wait = board.wait;
+
+  var single = function() {
+    return singleAxle(clasif);
+  }
+  var double = function() {
+    return doubleAxle(clasif);
+  }
+
+  open(clasif, 'BO');
+  wait(GAP_TIME, function() {
+    open(clasif, 'BP');
+    single()
+      .then(double)
+      .then(double)
+      .then(function() {
+        close(clasif, 'BP');
+        close(clasif, 'BO');
       });
   });
 }
@@ -163,6 +265,8 @@ function toggleAll() {
   }
 }
 function close(clasif, sensor) {
+  if (arguments.length != 2) throw ArgumentException(arguments);
+
   var clasif = clasif.toLowerCase();
   var status = SENSOR_MAP[clasif][sensor];
   var relay  = RELAYS[clasif][sensor];
@@ -172,6 +276,8 @@ function close(clasif, sensor) {
   SENSOR_MAP[clasif][sensor] = false;
 }
 function open(clasif, sensor) {
+  if (arguments.length != 2) throw ArgumentException(arguments);
+
   var clasif = clasif.toLowerCase();
   var status = SENSOR_MAP[clasif][sensor];
   var relay  = RELAYS[clasif][sensor];
@@ -179,6 +285,10 @@ function open(clasif, sensor) {
   console.log('Opening ' + clasif + ': ' + sensor + '...');
   relay.open();
   SENSOR_MAP[clasif][sensor] = true;
+}
+function ArgumentException(arguments) {
+  var args = util.inspect(arguments);
+  return new Error("Invalid arguments: " + args);
 }
 
 module.exports = {
@@ -193,6 +303,8 @@ module.exports = {
   singleAxle: singleAxle,
   doubleAxle: doubleAxle,
   simulate1A: simulate1A,
+  simulate2B: simulate2B,
+  simulate3C: simulate3C,
   GAP_TIME: GAP_TIME,
   STD_TIME: STD_TIME
 }
