@@ -114,7 +114,6 @@ function singleAxle() {
   });
   return promise;
 }
-
 function doubleAxle() {
   var promise = new Promise(function(resolve, reject) {
     var wait = board.wait;
@@ -133,6 +132,20 @@ function doubleAxle() {
     });
   });
   return promise;
+}
+function simulate1A() {
+  var wait = board.wait;
+
+  open('BO');
+  wait(GAP_TIME, function() {
+    open('BP');
+    singleAxle()
+      .then(singleAxle)
+      .then(function() {
+        close('BP');
+        close('BO');
+      });
+  });
 }
 
 function toggleSensor(clasif, sensor) {
@@ -157,5 +170,7 @@ module.exports = {
   board: board,
   five: five,
   boardReady: boardReady,
-  singleAxle: singleAxle
+  singleAxle: singleAxle,
+  doubleAxle: doubleAxle,
+  simulate1A: simulate1A,
 }
