@@ -3,10 +3,12 @@ var Promise = require('promise');
 var five    = require('johnny-five');
 var raspi   = require('raspi-io');
 
+// TODO: AGREGAR OTRO BP2 en POS
+
 /**
  * GLOBAL VARS
  **/
-var FACTOR     = 3;
+var FACTOR     = 1;
 var GAP_TIME   = 50 * FACTOR;
 var STD_TIME   = 100 * FACTOR;
 var IS_READY   = false;
@@ -104,6 +106,8 @@ function singleAxle(clasif) {
       return signal(clasif, sensor);
     }
 
+    var ss = function(sensor1, sensor2) { return overlapSignal(clasif, sensor1, sensor2); }
+
     if (clasif == 'POS') {
       s('E1')
         .then(function () { return s('A1') })
@@ -113,8 +117,7 @@ function singleAxle(clasif) {
           resolve();
         });
     } else if (clasif == 'PRE') {
-      s('E1')
-        .then(function () { return s('E2') })
+      ss('E1', 'E2')
         .then(function () { return s('A1') })
         .then(function () { return s('A2') })
         .then(function() {
@@ -176,24 +179,24 @@ function signal(clasif, sensor) {
 function overlapSignal(clasif, sensor1, sensor2) {
   return new Promise(function(resolve, reject) {
     open(clasif, sensor1);
-    open(clasif, sensor2);
-    board.wait(STD_TIME, function() {
-      close(clasif, sensor1);
-      close(clasif, sensor2);
+    board.wait(GAP_TIME, function() {
+      open(clasif, sensor2);
+      board.wait(STD_TIME, function() {
+        close(clasif, sensor1);
+        close(clasif, sensor2);
 
-      board.wait(GAP_TIME, function() {
-        resolve();
+        board.wait(GAP_TIME, function() {
+          resolve();
+        });
       });
     });
   });
 }
 
 function simulate1A(clasif) {
-  var wait = board.wait;
-
-  var single = function() {
-    return singleAxle(clasif);
-  }
+  return new Promise(function(resolve, reject) {
+  var wait   = board.wait;
+  var single = function() { return singleAxle(clasif); }
 
   open(clasif, 'BO');
   wait(GAP_TIME, function() {
@@ -203,18 +206,18 @@ function simulate1A(clasif) {
       .then(function() {
         close(clasif, 'BP');
         close(clasif, 'BO');
+        wait(STD_TIME * 4, function() {
+          resolve();
+        });
       });
+  });
   });
 }
 function simulate2B(clasif) {
-  var wait = board.wait;
-
-  var single = function() {
-    return singleAxle(clasif);
-  }
-  var double = function() {
-    return doubleAxle(clasif);
-  }
+  return new Promise(function(resolve, reject) {
+  var wait   = board.wait;
+  var single = function() { return singleAxle(clasif); }
+  var double = function() { return doubleAxle(clasif); }
 
   open(clasif, 'BO');
   wait(GAP_TIME, function() {
@@ -224,29 +227,71 @@ function simulate2B(clasif) {
       .then(function() {
         close(clasif, 'BP');
         close(clasif, 'BO');
+        //resolve();
+        wait(STD_TIME * 4, function() {
+          resolve();
+        });
+      });
       });
   });
 }
 function simulate3C(clasif) {
-  var wait = board.wait;
-
-  var single = function() {
-    return singleAxle(clasif);
-  }
-  var double = function() {
-    return doubleAxle(clasif);
-  }
+  return new Promise(function(resolve, reject) {
+  var wait   = board.wait;
+  var single = function() { return singleAxle(clasif); }
+  var double = function() { return doubleAxle(clasif); }
 
   open(clasif, 'BO');
   wait(GAP_TIME, function() {
     open(clasif, 'BP');
     single()
       .then(double)
-      .then(double)
+      .then(double) // 3C
+      .then(double) // 4C
+      .then(double) // 5C
+      .then(double) // 6C
+      .then(double) // 7C
+      .then(double) // 8C
+      .then(double) // 9C
       .then(function() {
         close(clasif, 'BP');
         close(clasif, 'BO');
+        //resolve();
+        wait(STD_TIME * 4, function() {
+          resolve();
+        });
       });
+      });
+  });
+}
+
+function simulate4C(clasif) {
+  return new Promise(function(resolve, reject) {
+  var wait   = board.wait;
+  var single = function() { return singleAxle(clasif); }
+  var double = function() { return doubleAxle(clasif); }
+
+  open(clasif, 'BO');
+  wait(GAP_TIME, function() {
+    open(clasif, 'BP');
+    single()
+      .then(double)
+      .then(double) // 3C
+      .then(double) // 4C
+      //.then(double) // 5C
+      //.then(double) // 6C
+      //.then(double) // 7C
+      //.then(double) // 8C
+      //.then(double) // 9C
+      .then(function() {
+        close(clasif, 'BP');
+        close(clasif, 'BO');
+        //resolve();
+        wait(STD_TIME * 4, function() {
+          resolve();
+        });
+      });
+  });
   });
 }
 
@@ -292,19 +337,20 @@ function ArgumentException(arguments) {
 }
 
 module.exports = {
+  five:         five,
+  board:        board,
+  boardReady:   boardReady,
+  close:        close,
+  open:         open,
+  toggleAll:    toggleAll,
   toggleSensor: toggleSensor,
-  toggleAll: toggleAll,
-  close: close,
-  open: open,
-  SENSOR_MAP: SENSOR_MAP,
-  board: board,
-  five: five,
-  boardReady: boardReady,
-  singleAxle: singleAxle,
-  doubleAxle: doubleAxle,
-  simulate1A: simulate1A,
-  simulate2B: simulate2B,
-  simulate3C: simulate3C,
-  GAP_TIME: GAP_TIME,
-  STD_TIME: STD_TIME
+  singleAxle:   singleAxle,
+  doubleAxle:   doubleAxle,
+  simulate1A:   simulate1A,
+  simulate2B:   simulate2B,
+  simulate3C:   simulate3C,
+  simulate4C:   simulate4C,
+  SENSOR_MAP:   SENSOR_MAP,
+  GAP_TIME:     GAP_TIME,
+  STD_TIME:     STD_TIME
 }

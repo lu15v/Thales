@@ -32,6 +32,9 @@ router.get('/switches', function(req, res, next) {
 router.get('/manual', function(req, res, next) {
   res.render('manual', {});
 });
+router.get('/auto', function(req, res, next) {
+  res.render('auto', {});
+});
 router.get('/test', function(req, res, next) {
   res.render('test', {});
 });
