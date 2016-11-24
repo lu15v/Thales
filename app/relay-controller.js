@@ -91,6 +91,50 @@ var boardReady = new Promise(function(resolve, reject) {
 });
 
 
+function singleAxle() {
+  var promise = new Promise(function(resolve, reject) {
+    var wait = board.wait;
+    open('E1');
+    wait(STD_TIME, function() {
+      close('E1');
+      wait(GAP_TIME, function() {
+        open('A1');
+        wait(STD_TIME, function() {
+          close('A1');
+          wait(GAP_TIME, function() {
+            open('A2');
+            wait(STD_TIME, function() {
+              close('A2');
+              resolve();
+            });
+          });
+        });
+      });
+    });
+  });
+  return promise;
+}
+
+function doubleAxle() {
+  var promise = new Promise(function(resolve, reject) {
+    var wait = board.wait;
+    open('E1');
+    wait(STD_TIME, function() {
+      close('E1');
+      wait(GAP_TIME, function() {
+        open('A1');
+        open('A2');
+        wait(STD_TIME, function() {
+          close('A1');
+          close('A2');
+          resolve();
+        });
+      });
+    });
+  });
+  return promise;
+}
+
 function toggleSensor(clasif, sensor) {
   var status = SENSOR_MAP[clasif][sensor];
   var relay  = RELAYS[clasif][sensor];
@@ -112,5 +156,6 @@ module.exports = {
   SENSOR_MAP: SENSOR_MAP,
   board: board,
   five: five,
-  boardReady: boardReady
+  boardReady: boardReady,
+  singleAxle: singleAxle
 }
