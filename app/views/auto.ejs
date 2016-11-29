@@ -51,7 +51,27 @@
     </header>
     <div class="container">
       <!-- Page Content goes here -->
-      <div class="row center">
+      <div class="row center" ng-show="loading">
+        <div class="col s12">
+        <div class="loading">
+          <div class="preloader-wrapper big active">
+            <div class="spinner-layer spinner-blue-only">
+              <div class="circle-clipper left">
+                <div class="circle"></div>
+              </div><div class="gap-patch">
+                <div class="circle"></div>
+              </div><div class="circle-clipper right">
+                <div class="circle"></div>
+              </div>
+            </div>
+          </div>
+
+          <p class="flow-text">Simulación en proceso</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row center" ng-hide="loading">
         <div class="col s4" ng-repeat="category in categories">
           <div class="card-panel {{ colors[$index] }}">
             <h2 class="white-text category">
