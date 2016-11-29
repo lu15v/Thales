@@ -69,7 +69,26 @@ router.post('/manual_test', checkBoard, function(req, res, next) {
   if (body.first['sensor'] != 'BO') {
     return res.status(400).json('BO should be the first signal activated');
   }
+});
+router.post('/simulate/:clasif/:category', checkBoard, function(req, res, next) {
+  var clasif   = req.params.clasif;
+  var category = req.params.category;
 
+
+  var simulation = controller['simulate' + category]();
+  simulation.then(function() {
+    res.status(200).json({ status: 'COMPLETE'});
+  });
+});
+router.post('/simulate/:clasif', function(req, res, next) {
+  var clasif = req.params.clasif;
+  var simulation = req.body.simulation;
+
+  var p = new Promise(function(resolve, reject) {
+    simulation.forEach(function(el) {
+      p.then(controller['simulate' + el]);
+    });
+  });
 });
 
 module.exports = router;

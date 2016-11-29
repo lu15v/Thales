@@ -195,106 +195,223 @@ function overlapSignal(clasif, sensor1, sensor2) {
 
 function simulate1A(clasif) {
   return new Promise(function(resolve, reject) {
-  var wait   = board.wait;
-  var single = function() { return singleAxle(clasif); }
+    var wait   = board.wait;
+    var single = function() { return singleAxle(clasif); }
 
-  open(clasif, 'BO');
-  wait(GAP_TIME, function() {
-    open(clasif, 'BP');
-    single()
-      .then(single)
-      .then(function() {
-        close(clasif, 'BP');
-        close(clasif, 'BO');
-        wait(STD_TIME * 4, function() {
-          resolve();
+    open(clasif, 'BO');
+    wait(GAP_TIME, function() {
+      open(clasif, 'BP');
+      single()
+        .then(single)
+        .then(function() {
+          close(clasif, 'BP');
+          close(clasif, 'BO');
+          wait(STD_TIME * 4, function() {
+            resolve();
+          });
         });
-      });
-  });
+    });
   });
 }
 function simulate2B(clasif) {
   return new Promise(function(resolve, reject) {
-  var wait   = board.wait;
-  var single = function() { return singleAxle(clasif); }
-  var double = function() { return doubleAxle(clasif); }
+    var wait   = board.wait;
+    var single = function() { return singleAxle(clasif); }
+    var double = function() { return doubleAxle(clasif); }
 
-  open(clasif, 'BO');
-  wait(GAP_TIME, function() {
-    open(clasif, 'BP');
-    single()
-      .then(double)
-      .then(function() {
-        close(clasif, 'BP');
-        close(clasif, 'BO');
-        //resolve();
-        wait(STD_TIME * 4, function() {
-          resolve();
+    open(clasif, 'BO');
+    wait(GAP_TIME, function() {
+      open(clasif, 'BP');
+      single()
+        .then(double)
+        .then(function() {
+          close(clasif, 'BP');
+          close(clasif, 'BO');
+          wait(STD_TIME * 4, function() {
+            resolve();
+          });
         });
-      });
-      });
+    });
   });
 }
 function simulate3C(clasif) {
   return new Promise(function(resolve, reject) {
-  var wait   = board.wait;
-  var single = function() { return singleAxle(clasif); }
-  var double = function() { return doubleAxle(clasif); }
+    var wait   = board.wait;
+    var single = function() { return singleAxle(clasif); }
+    var double = function() { return doubleAxle(clasif); }
 
-  open(clasif, 'BO');
-  wait(GAP_TIME, function() {
-    open(clasif, 'BP');
-    single()
-      .then(double)
-      .then(double) // 3C
-      .then(double) // 4C
-      .then(double) // 5C
-      .then(double) // 6C
-      .then(double) // 7C
-      .then(double) // 8C
-      .then(double) // 9C
-      .then(function() {
-        close(clasif, 'BP');
-        close(clasif, 'BO');
-        //resolve();
-        wait(STD_TIME * 4, function() {
-          resolve();
+    open(clasif, 'BO');
+    wait(GAP_TIME, function() {
+      open(clasif, 'BP');
+      single()
+        .then(double)
+        .then(double) // 3C
+        .then(function() {
+          close(clasif, 'BP');
+          close(clasif, 'BO');
+          wait(STD_TIME * 4, function() {
+            resolve();
+          });
         });
-      });
-      });
+    });
   });
 }
 
 function simulate4C(clasif) {
   return new Promise(function(resolve, reject) {
-  var wait   = board.wait;
-  var single = function() { return singleAxle(clasif); }
-  var double = function() { return doubleAxle(clasif); }
+    var wait   = board.wait;
+    var single = function() { return singleAxle(clasif); }
+    var double = function() { return doubleAxle(clasif); }
 
-  open(clasif, 'BO');
-  wait(GAP_TIME, function() {
-    open(clasif, 'BP');
-    single()
-      .then(double)
-      .then(double) // 3C
-      .then(double) // 4C
-      //.then(double) // 5C
-      //.then(double) // 6C
-      //.then(double) // 7C
-      //.then(double) // 8C
-      //.then(double) // 9C
-      .then(function() {
-        close(clasif, 'BP');
-        close(clasif, 'BO');
-        //resolve();
-        wait(STD_TIME * 4, function() {
-          resolve();
+    open(clasif, 'BO');
+    wait(GAP_TIME, function() {
+      open(clasif, 'BP');
+      single()
+        .then(double)
+        .then(double) // 3C
+        .then(double) // 4C
+        .then(function() {
+          close(clasif, 'BP');
+          close(clasif, 'BO');
+          wait(STD_TIME * 4, function() {
+            resolve();
+          });
         });
-      });
-  });
+    });
   });
 }
 
+function simulate5C(clasif) {
+  return new Promise(function(resolve, reject) {
+    var wait   = board.wait;
+    var single = function() { return singleAxle(clasif); }
+    var double = function() { return doubleAxle(clasif); }
+
+    open(clasif, 'BO');
+    wait(GAP_TIME, function() {
+      open(clasif, 'BP');
+      single()
+        .then(double)
+        .then(double) // 3C
+        .then(double) // 4C
+        .then(double) // 5C
+        .then(function() {
+          close(clasif, 'BP');
+          close(clasif, 'BO');
+          wait(STD_TIME * 4, function() {
+            resolve();
+          });
+        });
+    });
+  });
+}
+function simulate6C(clasif) {
+  return new Promise(function(resolve, reject) {
+    var wait   = board.wait;
+    var single = function() { return singleAxle(clasif); }
+    var double = function() { return doubleAxle(clasif); }
+
+    open(clasif, 'BO');
+    wait(GAP_TIME, function() {
+      open(clasif, 'BP');
+      single()
+        .then(double)
+        .then(double) // 3C
+        .then(double) // 4C
+        .then(double) // 5C
+        .then(double) // 6C
+        .then(function() {
+          close(clasif, 'BP');
+          close(clasif, 'BO');
+          wait(STD_TIME * 4, function() {
+            resolve();
+          });
+        });
+    });
+  });
+}
+function simulate7C(clasif) {
+  return new Promise(function(resolve, reject) {
+    var wait   = board.wait;
+    var single = function() { return singleAxle(clasif); }
+    var double = function() { return doubleAxle(clasif); }
+
+    open(clasif, 'BO');
+    wait(GAP_TIME, function() {
+      open(clasif, 'BP');
+      single()
+        .then(double)
+        .then(double) // 3C
+        .then(double) // 4C
+        .then(double) // 5C
+        .then(double) // 6C
+        .then(double) // 7C
+        .then(function() {
+          close(clasif, 'BP');
+          close(clasif, 'BO');
+          //resolve();
+          wait(STD_TIME * 4, function() {
+            resolve();
+          });
+        });
+    });
+  });
+}
+function simulate8C(clasif) {
+  return new Promise(function(resolve, reject) {
+    var wait   = board.wait;
+    var single = function() { return singleAxle(clasif); }
+    var double = function() { return doubleAxle(clasif); }
+
+    open(clasif, 'BO');
+    wait(GAP_TIME, function() {
+      open(clasif, 'BP');
+      single()
+        .then(double)
+        .then(double) // 3C
+        .then(double) // 4C
+        .then(double) // 5C
+        .then(double) // 6C
+        .then(double) // 7C
+        .then(double) // 8C
+        .then(function() {
+          close(clasif, 'BP');
+          close(clasif, 'BO');
+          wait(STD_TIME * 4, function() {
+            resolve();
+          });
+        });
+    });
+  });
+}
+function simulate9C(clasif) {
+  return new Promise(function(resolve, reject) {
+    var wait   = board.wait;
+    var single = function() { return singleAxle(clasif); }
+    var double = function() { return doubleAxle(clasif); }
+
+    open(clasif, 'BO');
+    wait(GAP_TIME, function() {
+      open(clasif, 'BP');
+      single()
+        .then(double)
+        .then(double) // 3C
+        .then(double) // 4C
+        .then(double) // 5C
+        .then(double) // 6C
+        .then(double) // 7C
+        .then(double) // 8C
+        .then(double) // 9C
+        .then(function() {
+          close(clasif, 'BP');
+          close(clasif, 'BO');
+          wait(STD_TIME * 4, function() {
+            resolve();
+          });
+        });
+    });
+  });
+}
 function toggleSensor(clasif, sensor) {
   var status = SENSOR_MAP[clasif][sensor];
   var relay  = RELAYS[clasif][sensor];
@@ -346,10 +463,17 @@ module.exports = {
   toggleSensor: toggleSensor,
   singleAxle:   singleAxle,
   doubleAxle:   doubleAxle,
+
   simulate1A:   simulate1A,
   simulate2B:   simulate2B,
   simulate3C:   simulate3C,
   simulate4C:   simulate4C,
+  simulate5C:   simulate5C,
+  simulate6C:   simulate6C,
+  simulate7C:   simulate7C,
+  simulate8C:   simulate8C,
+  simulate9C:   simulate9C,
+
   SENSOR_MAP:   SENSOR_MAP,
   GAP_TIME:     GAP_TIME,
   STD_TIME:     STD_TIME
