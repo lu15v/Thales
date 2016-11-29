@@ -15,6 +15,7 @@ var IS_READY   = false;
 var SENSOR_MAP = {
   pre: {
     'BP': false,
+    'BP2': false,
     'BO': false,
     'E1': false,
     'E2': false,
@@ -32,6 +33,7 @@ var SENSOR_MAP = {
 var PIN_MAP = {
   pre: {
     'BP': 0,
+    'BP2': 7,
     'BO': 2,
     'E1': 3,
     'E2': 4,
@@ -49,6 +51,7 @@ var PIN_MAP = {
 var RELAYS = {
   pre: {
     'BP': null,
+    'BP2': null,
     'BO': null,
     'E1': null,
     'E2': null,

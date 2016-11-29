@@ -3,6 +3,7 @@ var app = angular.module('thalesApp', []);
 var SWITCHES = {
   pre: {
     'BP': false,
+    'BP2': false,
     'BO': false,
     'E1': false,
     'E2': false,
