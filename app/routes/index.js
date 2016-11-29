@@ -74,7 +74,7 @@ router.post('/simulate/:clasif/:category', checkBoard, function(req, res, next) 
   var clasif   = req.params.clasif;
   var category = req.params.category;
 
-  console.log('Calling... ' clasif, category);
+  console.log('Calling... ', clasif, category);
   var simulation = controller['simulate' + category](clasif);
   simulation.then(function() {
     res.status(200).json({ status: 'COMPLETE'});
