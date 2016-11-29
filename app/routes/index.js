@@ -26,17 +26,11 @@ var checkBoard = function(req, res, next) {
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
-router.get('/switches', function(req, res, next) {
-  res.render('switches', {});
-});
 router.get('/manual', function(req, res, next) {
-  res.render('manual', {});
+  res.render('switches', {});
 });
 router.get('/auto', function(req, res, next) {
   res.render('auto', {});
-});
-router.get('/test', function(req, res, next) {
-  res.render('test', {});
 });
 router.get('/status', checkBoard, function(req, res, next) {
   console.log(SENSOR_MAP);
