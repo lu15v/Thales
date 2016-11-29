@@ -1,6 +1,6 @@
 var app = angular.module('AutoTest', []);
 
-var API = "http://localhost:3000/";
+var API = "http://10.0.1.14:3000/simulate/";
 
 app.controller('SimulationController', function SimulationController($scope, $http) {
   $scope.categories = ['1A', '2B', '3C', '4C', '5C', '6C', '7C', '8C', '9C'];
@@ -22,10 +22,10 @@ app.controller('SimulationController', function SimulationController($scope, $ht
 
   $scope.simulate = function(clasif, category) {
     console.log('Simulating', clasif, category);
-    $http.post(API + clasif + '/' + category,
-      function(response) {
+    $http.post(API + clasif + '/' + category)
+      .then(function(response) {
         console.log(response);
-    });
+      });
   }
 });
 
