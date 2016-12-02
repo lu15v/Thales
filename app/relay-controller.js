@@ -3,15 +3,29 @@ var Promise = require('promise');
 var five    = require('johnny-five');
 var raspi   = require('raspi-io');
 
-// TODO: AGREGAR OTRO BP2 en POS
-
 /**
- * GLOBAL VARS
- **/
+ * GAP_TIME and STD_TIME gets multiplied
+ * by this factor in order to increase/decrease
+ * the amount of time.
+ */
 var FACTOR     = 1;
+/**
+ * Time between each signal.
+ * @constant
+ * @default
+ */
 var GAP_TIME   = 50 * FACTOR;
+/**
+ * Time that the signal will be UP/HIGH.
+ * @constant
+ * @default
+ */
 var STD_TIME   = 100 * FACTOR;
-var IS_READY   = false;
+/**
+ * Status of each sensor.
+ * @constant
+ * @default
+ */
 var SENSOR_MAP = {
   pre: {
     'BP': false,
@@ -30,6 +44,14 @@ var SENSOR_MAP = {
     'A2': false,
   },
 };
+/**
+ * Pinout mapping of the Raspberry Pins
+ * The key indicates the sensor and the {integer} value
+ * represents the Wiring Pi PIN number.
+ * For more information check this link:
+ * http://wiringpi.com/pins/ or http://pinout.xyz/
+ * and look for the section WiringPi Pin
+ */
 var PIN_MAP = {
   pre: {
     'BP': 0,
@@ -75,6 +97,16 @@ var board = new five.Board({
   repl: false,
   debug: false
 });
+/**
+ * Promise that gets resolved when the Raspberry Pi is
+ * properly initialized with all the sensors mapped to the
+ * pins.
+ * At the begining, every sensor is OFF/LOW
+ *
+ * @param resolve - resolve(five, board)
+ * @param reject - reject()
+ * @returns {Promise} promise(resolve, reject)
+ */
 var boardReady = new Promise(function(resolve, reject) {
   board.on('ready', function() {
     console.log('*** RELAY  INIT ***');
@@ -97,6 +129,15 @@ var boardReady = new Promise(function(resolve, reject) {
 });
 
 
+/**
+ * Simulates the crossing of a vehicle's single axle.
+ * This is useful to group the following sequence of signals:
+ * For POS: E1, A1, A2
+ * For PRE: E1-E2, A1, A2
+ *
+ * @param clasif - 'PRE' or 'POS'
+ * @returns {Promise} - promise(resolve, reject)
+ */
 function singleAxle(clasif) {
   if (clasif === undefined) throw ArgumentException(arguments);
 
@@ -132,6 +173,15 @@ function singleAxle(clasif) {
     }
   });
 }
+/**
+ * Simulates the crossing of a vehicle's double axle.
+ * This is useful to group the following sequence of signals:
+ * For POS: E1, A1-A2
+ * For PRE: E1E2, A1-A2
+ *
+ * @param clasif - 'PRE' or 'POS'
+ * @returns {Promise} - promise(resolve, reject)
+ */
 function doubleAxle(clasif) {
   if (clasif === undefined) throw ArgumentException(arguments);
 
@@ -167,6 +217,15 @@ function doubleAxle(clasif) {
   });
 }
 
+/**
+ * Simulate sending a signal from a sensor. This means
+ * start sending the signal and after {STD_TIME} stop
+ * sending it. After that there is a WAIT TIME of {GAP_TIME}
+ *
+ * @param clasif
+ * @param sensor
+ * @returns {Promise} - promise(resolve, reject)
+ */
 function signal(clasif, sensor) {
   return new Promise(function(resolve, reject) {
     open(clasif, sensor);
@@ -179,6 +238,17 @@ function signal(clasif, sensor) {
     });
   });
 }
+/**
+ * Simulate sending a signal overlapped from two sensors. This means
+ * start sending the signal and right after waiting GAP_TIME, start
+ * sending the second signal at the same time. After {STD_TIME} both
+ * signals stop sending at the same time and after that there is
+ * a WAIT TIME of {GAP_TIME}
+ *
+ * @param clasif
+ * @param sensor
+ * @returns {Promise} - promise(resolve, reject)
+ */
 function overlapSignal(clasif, sensor1, sensor2) {
   return new Promise(function(resolve, reject) {
     open(clasif, sensor1);
@@ -196,6 +266,33 @@ function overlapSignal(clasif, sensor1, sensor2) {
   });
 }
 
+/**
+ * Simulate the crossing of a 1A vehicle. This means sending the
+ * following signals:
+ * For POS:
+ *    OPEN BO
+ *    OPEN BP
+ *
+ *    E1
+ *    A1
+ *    A2
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ * For PRE:
+ *    OPEN BO
+ *    OPEN BP
+ *
+ *    E1-E2
+ *    A1
+ *    A2
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ *
+ * @param clasif
+ * @returns {Promise} - promise(resolve, reject)
+ */
 function simulate1A(clasif) {
   return new Promise(function(resolve, reject) {
     var wait   = board.wait;
@@ -216,6 +313,37 @@ function simulate1A(clasif) {
     });
   });
 }
+/**
+ * Simulate the crossing of a 2B/2C vehicle. This means sending the
+ * following signals:
+ * For POS:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1
+ *    A1
+ *    A2
+ *
+ *    E1
+ *    A1-A2
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ * For PRE:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1-E2
+ *    A1
+ *    A2
+ *
+ *    E1-E2
+ *    A1-A2
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ *
+ * @param clasif
+ * @returns {Promise} - promise(resolve, reject)
+ */
 function simulate2B(clasif) {
   return new Promise(function(resolve, reject) {
     var wait   = board.wait;
@@ -237,6 +365,37 @@ function simulate2B(clasif) {
     });
   });
 }
+/**
+ * Simulate the crossing of a 3C vehicle. This means sending the
+ * following signals:
+ * For POS:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1
+ *    A1
+ *    A2
+ *
+ *    E1    <-- This gets repeated
+ *    A1-A2 <-- two times
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ * For PRE:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1-E2
+ *    A1
+ *    A2
+ *
+ *    E1-E2 <-- This gets repeated
+ *    A1-A2 <-- two times
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ *
+ * @param clasif
+ * @returns {Promise} - promise(resolve, reject)
+ */
 function simulate3C(clasif) {
   return new Promise(function(resolve, reject) {
     var wait   = board.wait;
@@ -260,6 +419,37 @@ function simulate3C(clasif) {
   });
 }
 
+/**
+ * Simulate the crossing of a 4C vehicle. This means sending the
+ * following signals:
+ * For POS:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1
+ *    A1
+ *    A2
+ *
+ *    E1    <-- This gets repeated
+ *    A1-A2 <-- three times
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ * For PRE:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1-E2
+ *    A1
+ *    A2
+ *
+ *    E1-E2 <-- This gets repeated
+ *    A1-A2 <-- three times
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ *
+ * @param clasif
+ * @returns {Promise} - promise(resolve, reject)
+ */
 function simulate4C(clasif) {
   return new Promise(function(resolve, reject) {
     var wait   = board.wait;
@@ -284,6 +474,37 @@ function simulate4C(clasif) {
   });
 }
 
+/**
+ * Simulate the crossing of a 5C vehicle. This means sending the
+ * following signals:
+ * For POS:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1
+ *    A1
+ *    A2
+ *
+ *    E1    <-- This gets repeated
+ *    A1-A2 <-- four times
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ * For PRE:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1-E2
+ *    A1
+ *    A2
+ *
+ *    E1-E2 <-- This gets repeated
+ *    A1-A2 <-- four times
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ *
+ * @param clasif
+ * @returns {Promise} - promise(resolve, reject)
+ */
 function simulate5C(clasif) {
   return new Promise(function(resolve, reject) {
     var wait   = board.wait;
@@ -308,6 +529,38 @@ function simulate5C(clasif) {
     });
   });
 }
+
+/**
+ * Simulate the crossing of a 6C vehicle. This means sending the
+ * following signals:
+ * For POS:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1
+ *    A1
+ *    A2
+ *
+ *    E1    <-- This gets repeated
+ *    A1-A2 <-- five times
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ * For PRE:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1-E2
+ *    A1
+ *    A2
+ *
+ *    E1-E2 <-- This gets repeated
+ *    A1-A2 <-- five times
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ *
+ * @param clasif
+ * @returns {Promise} - promise(resolve, reject)
+ */
 function simulate6C(clasif) {
   return new Promise(function(resolve, reject) {
     var wait   = board.wait;
@@ -333,6 +586,38 @@ function simulate6C(clasif) {
     });
   });
 }
+
+/**
+ * Simulate the crossing of a 7C vehicle. This means sending the
+ * following signals:
+ * For POS:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1
+ *    A1
+ *    A2
+ *
+ *    E1    <-- This gets repeated
+ *    A1-A2 <-- six times
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ * For PRE:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1-E2
+ *    A1
+ *    A2
+ *
+ *    E1-E2 <-- This gets repeated
+ *    A1-A2 <-- six times
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ *
+ * @param clasif
+ * @returns {Promise} - promise(resolve, reject)
+ */
 function simulate7C(clasif) {
   return new Promise(function(resolve, reject) {
     var wait   = board.wait;
@@ -360,6 +645,38 @@ function simulate7C(clasif) {
     });
   });
 }
+
+/**
+ * Simulate the crossing of a 8C vehicle. This means sending the
+ * following signals:
+ * For POS:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1
+ *    A1
+ *    A2
+ *
+ *    E1    <-- This gets repeated
+ *    A1-A2 <-- seven times
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ * For PRE:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1-E2
+ *    A1
+ *    A2
+ *
+ *    E1-E2 <-- This gets repeated
+ *    A1-A2 <-- seven times
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ *
+ * @param clasif
+ * @returns {Promise} - promise(resolve, reject)
+ */
 function simulate8C(clasif) {
   return new Promise(function(resolve, reject) {
     var wait   = board.wait;
@@ -387,6 +704,38 @@ function simulate8C(clasif) {
     });
   });
 }
+
+/**
+ * Simulate the crossing of a 8C vehicle. This means sending the
+ * following signals:
+ * For POS:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1
+ *    A1
+ *    A2
+ *
+ *    E1    <-- This gets repeated
+ *    A1-A2 <-- eight times
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ * For PRE:
+ *    OPEN BO
+ *    OPEN BP
+ *    E1-E2
+ *    A1
+ *    A2
+ *
+ *    E1-E2 <-- This gets repeated
+ *    A1-A2 <-- eight times
+ *
+ *    CLOSE BO
+ *    CLOSE BP
+ *
+ * @param clasif
+ * @returns {Promise} - promise(resolve, reject)
+ */
 function simulate9C(clasif) {
   return new Promise(function(resolve, reject) {
     var wait   = board.wait;
@@ -415,6 +764,14 @@ function simulate9C(clasif) {
     });
   });
 }
+/**
+ * Switches between ON/OFF of a specific sensor.
+ *
+ * @param clasif - 'PRE' or 'POS'
+ * @param {string} sensor - Name of the sensor:
+ * it must be one value of the SENSORS list.
+ * @returns {undefined}
+ */
 function toggleSensor(clasif, sensor) {
   var status = SENSOR_MAP[clasif][sensor];
   var relay  = RELAYS[clasif][sensor];
@@ -422,6 +779,11 @@ function toggleSensor(clasif, sensor) {
   relay.toggle();
   SENSOR_MAP[clasif][sensor] = !status;
 }
+/**
+ * Toggles the state of every sensor. If it was sending
+ * a signal, then it stops sending it.
+ * If it was not sending a signal, it starts sending a signal.
+ */
 function toggleAll() {
   for (var clasif in SENSOR_MAP) {
     for (var sensor in SENSOR_MAP[clasif]) {
@@ -429,6 +791,18 @@ function toggleAll() {
     }
   }
 }
+/**
+ * Closes the RELAY so any signal that was being sent through
+ * the PIN, gets interrupted.
+ *
+ * @param {string} clasif - It must be either 'PRE' or 'POS'
+ * @param {string} sensor - The sensor you want to simulate:
+ * it must be one value of the SENSORS list.
+ * @returns {boolean} - true if the relay was open correctly,
+ * false otherwise.
+ *
+ * @throws {ArgumentException} If you don't send both parameters
+ */
 function close(clasif, sensor) {
   if (arguments.length != 2) throw ArgumentException(arguments);
 
@@ -440,6 +814,19 @@ function close(clasif, sensor) {
   relay.close();
   SENSOR_MAP[clasif][sensor] = false;
 }
+/**
+ * Opens the RELAY so a signal is sent and it keeps sending
+ * such signal until you *manually* close the RELAY with the
+ * close function.
+ *
+ * @param {string} clasif - It must be either 'PRE' or 'POS'
+ * @param {string} sensor - The sensor you want to simulate:
+ * it must be one value of the SENSORS list.
+ * @returns {boolean} - true if the relay was open correctly,
+ * false otherwise.
+ *
+ * @throws {ArgumentException} If you don't send both parameters
+ */
 function open(clasif, sensor) {
   if (arguments.length != 2) throw ArgumentException(arguments);
 
@@ -450,6 +837,8 @@ function open(clasif, sensor) {
   console.log('Opening ' + clasif + ': ' + sensor + '...');
   relay.open();
   SENSOR_MAP[clasif][sensor] = true;
+
+  return true;
 }
 function ArgumentException(arguments) {
   var args = util.inspect(arguments);
