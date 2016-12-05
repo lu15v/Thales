@@ -28,3 +28,9 @@
   font-size: 2em;
   text-align: center;
 }
+
+.cat {
+  font-weight: 600;
+  display: inline;
+  font-size: 3em;
+}
