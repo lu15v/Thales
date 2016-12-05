@@ -19,3 +19,12 @@
 .light {
   font-weight: 200;
 }
+
+#sim-ui .input-field label {
+  color: #FFF;
+}
+#sim-ui .input-field input {
+  color: #FFF;
+  font-size: 2em;
+  text-align: center;
+}

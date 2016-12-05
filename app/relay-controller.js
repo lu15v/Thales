@@ -1,7 +1,7 @@
 var util    = require('util');
 var Promise = require('promise');
 var five    = require('johnny-five');
-var raspi   = require('raspi-io');
+//var raspi   = require('raspi-io');
 
 /**
  * GAP_TIME and STD_TIME gets multiplied
@@ -93,7 +93,7 @@ var RELAYS = {
  * BOARD EVENTS
  **/
 var board = new five.Board({
-  io: new raspi(),
+  //io: new raspi(),
   repl: false,
   debug: false
 });

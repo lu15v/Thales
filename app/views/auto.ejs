@@ -71,12 +71,18 @@
         </div>
       </div>
 
-      <div class="row center" ng-hide="loading">
+      <div class="row center" ng-hide="loading" id="sim-ui">
         <div class="col s4" ng-repeat="category in categories">
           <div class="card-panel {{ colors[$index] }}">
             <h2 class="white-text category">
               <i class="mdi mdi-48px mdi-light mdi-{{icon(category)}}"></i> {{ category }}
             </h2>
+            <p>
+              <div class="input-field">
+                <input type="number" min="1" value="1" />
+                <label># of vehicles</label>
+              </div>
+            </p>
             <p>
               <a class="waves-effect waves-light btn-large darken-4 {{ colors[$index] }}"
                 ng-click="simulate('PRE', category)">
