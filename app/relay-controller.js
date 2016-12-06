@@ -3,6 +3,7 @@ var Promise = require('promise');
 var five    = require('johnny-five');
 //var raspi   = require('raspi-io');
 
+var IS_READY = false;
 /**
  * GAP_TIME and STD_TIME gets multiplied
  * by this factor in order to increase/decrease
@@ -124,6 +125,7 @@ var boardReady = new Promise(function(resolve, reject) {
       }
     }
     console.log('* * * * * * * * * *');
+    IS_READY = true;
     resolve(five, board);
   });
 });

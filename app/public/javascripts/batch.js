@@ -1,6 +1,7 @@
 var app = angular.module('BatchTest', []);
 
-var API = "http://10.0.1.14:3000/simulate/";
+var HOST = "localhost";
+var API = "http://" + HOST + ":3000/simulate/";
 
 app.controller('SimulationController', function SimulationController($scope, $http) {
   $scope.batch = {
@@ -8,6 +9,7 @@ app.controller('SimulationController', function SimulationController($scope, $ht
     'POS': {}
   };
   $scope.loading = false;
+  $scope.error   = false;
   $scope.categories = ['1A', '2B', '3C', '4C', '5C', '6C', '7C', '8C', '9C'];
   $scope.colors = [
     'red', 'pink', 'purple',
@@ -31,13 +33,24 @@ app.controller('SimulationController', function SimulationController($scope, $ht
 
   $scope.simulate = function(clasif) {
     $scope.loading = true;
+    $scope.error   = false;
+
     console.log('Simulating', clasif);
     console.log($scope.batch);
-    //$http.post(API + clasif + '/' + category)
-      //.then(function(response) {
-        //console.log(response);
-        //$scope.loading = false;
-      //});
-  }
+    var data = $scope.batch[clasif];
+    $http.post(API + clasif, data)
+      .then(function(response) {
+        console.log(response);
+        $scope.loading = false;
+      })
+      .catch(function(err) {
+        console.log(err);
+        $scope.loading = false;
+        $scope.error = true;
+        $('#modalError').modal('open');
+      });
+  };
+
+  $('.modal').modal();
 });
 

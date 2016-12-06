@@ -1,4 +1,6 @@
 var express    = require('express');
+var Promise    = require('promise');
+var Q          = require('q');
 var controller = require('../relay-controller');
 
 var router     = express.Router();
@@ -55,18 +57,24 @@ router.post('/toggle', checkBoard, function(req, res, next) {
   console.log(SENSOR_MAP);
   res.status(200).json(SENSOR_MAP);
 });
+/**
+ * HTTP POST
+ * with empty body to toggle every sensor
+ *
+ */
 router.post('/toggle/all', checkBoard, function(req, res, next) {
   controller.toggleAll();
 
   res.status(200).json(SENSOR_MAP);
 });
-router.post('/manual_test', checkBoard, function(req, res, next) {
-  var body = req.body;
-
-  if (body.first['sensor'] != 'BO') {
-    return res.status(400).json('BO should be the first signal activated');
-  }
-});
+/**
+ * HTTP POST with empty body.
+ * Simulates a single vehicle of a specific category
+ * URL PARAMS:
+ * :clasif - PRE | POS
+ * :category - One of the VEHICLES_LIST
+ *
+ */
 router.post('/simulate/:clasif/:category', checkBoard, function(req, res, next) {
   var clasif   = req.params.clasif;
   var category = req.params.category;
@@ -77,15 +85,40 @@ router.post('/simulate/:clasif/:category', checkBoard, function(req, res, next) 
     res.status(200).json({ status: 'COMPLETE'});
   });
 });
+/**
+ * HTTP POST
+ * Simulates a bunch of vehicles.
+ * Body: { category: number_of_vehicles }
+ * e.g.
+ * {
+ *    '1A': 4,
+ *    '2B': 2,
+ *    '3C': 4
+ * }
+ *
+ */
 router.post('/simulate/:clasif', function(req, res, next) {
   var clasif = req.params.clasif;
-  var simulation = req.body.simulation;
+  var simulation = req.body;
+  console.log("Simulatig the following vehicles in " + clasif + "-CLA");
+  console.log(simulation);
+  var functions = [];
+  for (category in simulation) {
+    var amount = +simulation[category];
+    for(var i = 0; i < amount; i++) {
+      var fn = controller["simulate" + category].bind(undefined, clasif);
+      functions.push(fn);
+    }
+  }
+  console.log(functions);
 
-  var p = new Promise(function(resolve, reject) {
-    simulation.forEach(function(el) {
-      p.then(controller['simulate' + el]);
+  var result = functions.reduce(Q.when, Q());
+  result.done()
+    .then(function() {
+      res.status(200).send('OK');
+    }).catch(function() {
+      res.status(500).send('ERROR');
     });
-  });
 });
 
 module.exports = router;
