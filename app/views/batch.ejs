@@ -36,7 +36,8 @@
               </svg>
             </a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-              <li><a href="/auto">Simulación automática</a></li>
+              <li><a href="/auto">Simulación de vehículo</a></li>
+              <li><a href="/batch">Simulación automática</a></li>
               <li><a href="/manual">Simulación manual</a></li>
               <li><a href="/docs">Documentación</a></li>
             </ul>
@@ -100,7 +101,7 @@
                   <i class="mdi mdi-48px mdi-light mdi-{{icon(category)}}"></i> {{ category }}
                 </div>
                 <div class="input-field inline col s6">
-                  <input type="number" min="1" value="1"
+                  <input type="number" min="0" value="0"
                     ng-model="batch['PRE'][category]" />
                   <label># de vehículos</label>
                 </div>
@@ -117,7 +118,7 @@
                   <i class="mdi mdi-48px mdi-light mdi-{{icon(category)}}"></i> {{ category }}
                 </div>
                 <div class="input-field inline col s6">
-                  <input type="number" min="1" value="1"
+                  <input type="number" min="0" value="0"
                     ng-model="batch['POS'][category]" />
                   <label># de vehículos</label>
                 </div>

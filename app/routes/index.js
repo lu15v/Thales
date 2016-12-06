@@ -113,7 +113,7 @@ router.post('/simulate/:clasif', function(req, res, next) {
   console.log(functions);
 
   var result = functions.reduce(Q.when, Q());
-  result.done()
+  result
     .then(function() {
       res.status(200).send('OK');
     }).catch(function() {
