@@ -1,7 +1,7 @@
 var app = angular.module('BatchTest', []);
 
 var HOST = "10.0.1.14";
-var API = "http://" + HOST + ":3000/simulate/";
+var API = "/simulate/";
 
 app.controller('SimulationController', function SimulationController($scope, $http) {
   $scope.batch = {
