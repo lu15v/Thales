@@ -28,6 +28,11 @@ app.controller('SimulationController', function SimulationController($scope, $ht
       .then(function(response) {
         console.log(response);
         $scope.loading = false;
+      })
+      .catch(function(err) {
+        $scope.loading = false;
+        console.error(err);
+        $('#modalError').modal('open');
       });
   }
 });

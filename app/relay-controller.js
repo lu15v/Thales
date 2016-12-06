@@ -1,7 +1,7 @@
 var util    = require('util');
 var Promise = require('promise');
 var five    = require('johnny-five');
-//var raspi   = require('raspi-io');
+var raspi   = require('raspi-io');
 
 var IS_READY = false;
 /**
@@ -94,7 +94,7 @@ var RELAYS = {
  * BOARD EVENTS
  **/
 var board = new five.Board({
-  //io: new raspi(),
+  io: new raspi(),
   repl: false,
   debug: false
 });

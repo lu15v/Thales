@@ -71,6 +71,26 @@
         </div>
       </div>
 
+      <div class="row">
+        <!-- Modal Structure -->
+        <div id="modalError" class="modal">
+          <div class="modal-content">
+            <h4 class="center-align">Oops! Ha ocurrido un error</h4>
+            <i class="large material-icons col s2 right-align red-text">error</i>
+            <p class="red-text col s10 left-align">
+              Lo sentimos pero algo sucedió mientras se procesaba la simulación.
+              <br>
+              Por favor intenta nuevamente.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">
+              OK
+            </a>
+          </div>
+        </div>
+      </div>
+
       <div class="row center" ng-hide="loading" id="sim-ui">
         <div class="col s4" ng-repeat="category in categories">
           <div class="card-panel {{ colors[$index] }}">
