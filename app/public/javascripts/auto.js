@@ -1,6 +1,6 @@
 var app = angular.module('AutoTest', []);
 
-var API = "http://10.0.1.14:3000/simulate/";
+var API = "/simulate/";
 
 app.controller('SimulationController', function SimulationController($scope, $http) {
   $scope.loading = false;

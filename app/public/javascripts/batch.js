@@ -1,7 +1,7 @@
 var app = angular.module('BatchTest', []);
 
-var HOST = "localhost";
-var API = "http://" + HOST + ":3000/simulate/";
+var HOST = "10.0.1.14";
+var API = "/simulate/";
 
 app.controller('SimulationController', function SimulationController($scope, $http) {
   $scope.batch = {
@@ -19,8 +19,8 @@ app.controller('SimulationController', function SimulationController($scope, $ht
   ];
 
   $scope.categories.forEach(function(el) {
-    $scope.batch['PRE'][el] = 1;
-    $scope.batch['POS'][el] = 1;
+    $scope.batch['PRE'][el] = 0;
+    $scope.batch['POS'][el] = 0;
   });
 
   $scope.icon = function(category) {
